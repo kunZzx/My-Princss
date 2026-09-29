@@ -1,0 +1,287 @@
+/* ============================================================
+   PRINCSS — Tema: plum senja + emas champagne + kertas gading
+============================================================ */
+:root{
+  --bg:#120b10;
+  --card:rgba(28,18,24,.82);
+  --ivory:#f2e8d8;
+  --muted:#9c8674;
+  --gold:#cfa76b;
+  --gold-soft:#e7d0a0;
+  --rose:#dd8f9f;
+  --line:rgba(207,167,107,.38);
+  --line-soft:rgba(207,167,107,.16);
+  --paper:#f4edde;
+  --paper-ink:#37242e;
+
+  --serif:'Cormorant Garamond',Georgia,serif;
+  --sans:'Jost',sans-serif;
+  --display:'Italiana',serif;
+}
+
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{overflow-x:hidden}                    /* kunci anti "nabrak" horizontal di HP */
+body{
+  background:var(--bg);
+  background-image:radial-gradient(1100px 720px at 50% -12%, #1d1119 0%, transparent 62%);
+  color:var(--ivory);
+  font-family:var(--sans);
+  -webkit-font-smoothing:antialiased;
+  min-height:100svh;
+}
+img{display:block;max-width:100%}
+button{font-family:inherit;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+::selection{background:rgba(207,167,107,.35);color:#fff}
+:focus-visible{outline:1px solid var(--gold);outline-offset:3px}
+
+/* ---------- suasana (semua pointer-events:none → tak mengganggu) ---------- */
+#heartsCanvas{position:fixed;inset:0;z-index:1;pointer-events:none}
+.vignette{position:fixed;inset:0;z-index:2;pointer-events:none;
+  background:radial-gradient(128% 96% at 50% 40%, transparent 55%, rgba(6,3,7,.62) 100%)}
+.grain{position:fixed;inset:0;z-index:95;pointer-events:none;opacity:.05;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.55'/%3E%3C/svg%3E");
+  background-size:140px}
+
+/* ---------- layar ---------- */
+.screen{
+  display:none;position:relative;z-index:5;
+  min-height:100svh;
+  padding:max(22px,env(safe-area-inset-top)) clamp(18px,5vw,44px) max(22px,env(safe-area-inset-bottom));
+}
+.screen.active{display:flex;animation:fadeUp .7s ease both}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+.screen.gate{flex-direction:column;align-items:center;justify-content:center}
+.screen.main{flex-direction:column;align-items:stretch;justify-content:flex-start}
+
+/* ---------- kartu ornamen ---------- */
+.ornate-card{
+  width:min(100%,440px);position:relative;text-align:center;
+  background:var(--card);border:1px solid var(--line-soft);
+  padding:clamp(28px,6.5vw,44px) clamp(22px,6vw,40px);
+  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  box-shadow:0 30px 70px rgba(0,0,0,.5);
+}
+.corner{position:absolute;width:22px;height:22px;border:0 solid var(--line)}
+.corner.tl{top:9px;left:9px;border-top-width:1px;border-left-width:1px}
+.corner.tr{top:9px;right:9px;border-top-width:1px;border-right-width:1px}
+.corner.bl{bottom:9px;left:9px;border-bottom-width:1px;border-left-width:1px}
+.corner.br{bottom:9px;right:9px;border-bottom-width:1px;border-right-width:1px}
+
+.eyebrow{font-size:.66rem;letter-spacing:.36em;text-transform:uppercase;color:var(--gold);font-weight:400}
+.card-title{font-family:var(--display);font-weight:400;font-size:clamp(1.9rem,8vw,2.6rem);
+  letter-spacing:.1em;margin:12px 0 4px;color:var(--ivory)}
+.lead{font:italic 400 1.02rem/1.7 var(--serif);color:#cdbfae;margin-top:14px}
+.lock-lead{font:italic 400 .98rem/1.7 var(--serif);color:#cdbfae;margin-top:14px}
+
+.divider{display:flex;align-items:center;justify-content:center;gap:10px;margin:14px auto 0;max-width:220px}
+.divider span{flex:1;height:1px;background:var(--line-soft)}
+.divider i{width:7px;height:7px;background:var(--gold);transform:rotate(45deg);flex:none}
+
+/* ---------- sandi ---------- */
+.slots{display:flex;justify-content:center;gap:clamp(8px,2.6vw,12px);margin:26px 0 10px;user-select:none}
+.slot{
+  width:clamp(38px,11vw,48px);height:clamp(52px,14vw,60px);
+  border:1px solid var(--line-soft);background:rgba(255,255,255,.02);
+  display:grid;place-items:center;position:relative;
+  font:500 clamp(1.2rem,5vw,1.5rem) var(--serif);color:var(--gold-soft);
+  transition:border-color .3s,background .3s;
+}
+.slot::after{content:'';position:absolute;left:11px;right:11px;bottom:8px;height:1px;background:var(--line-soft);transition:background .3s}
+.slot.filled::after{background:var(--gold)}
+.slot.caret::before{content:'';position:absolute;width:1px;height:22px;background:var(--gold);animation:blink 1.05s steps(2) infinite}
+@keyframes blink{50%{opacity:0}}
+.slots.ok .slot{border-color:var(--gold);background:rgba(207,167,107,.08)}
+.pass-msg{font:italic .88rem/1.6 var(--serif);color:var(--muted);min-height:2.4em}
+.pass-msg.good{color:var(--gold-soft)}
+
+.keypad{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(8px,2.6vw,11px);
+  max-width:288px;margin:18px auto 0;user-select:none}
+.key{
+  aspect-ratio:1;border:1px solid var(--line-soft);border-radius:50%;
+  background:transparent;color:var(--ivory);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
+  transition:background .2s,border-color .2s,transform .12s;
+}
+.key:active{background:rgba(207,167,107,.16);border-color:var(--gold);transform:scale(.95)}
+.key b{font:400 1.3rem var(--serif);font-weight:500}
+.key small{font-size:.48rem;letter-spacing:.22em;color:var(--muted)}
+.key svg{color:var(--gold)}
+
+.shake{animation:shake .5s}
+@keyframes shake{
+  10%,90%{transform:translateX(-2px)}20%,80%{transform:translateX(3px)}
+  30%,50%,70%{transform:translateX(-6px)}40%,60%{transform:translateX(6px)}
+}
+
+/* layar HP pendek → padatkan kartu sandi agar tak perlu scroll */
+@media (max-height:720px){
+  .key{aspect-ratio:auto;padding:13px 0}
+  .slots{margin:18px 0 6px}
+  .lock-lead{margin-top:8px;font-size:.92rem}
+  .keypad{margin-top:12px}
+  .card-title{margin-top:8px}
+}
+
+/* ---------- pintu transisi ---------- */
+.doors{position:fixed;inset:0;z-index:70;display:none}
+.doors.show{display:block}
+.door{
+  position:absolute;top:0;bottom:0;width:50.4%;
+  background:linear-gradient(180deg,#1b1117,#0d080c);
+  transition:transform 1.05s cubic-bezier(.77,0,.18,1);
+}
+.door.left{left:0;border-right:1px solid var(--line-soft)}
+.door.right{right:0;border-left:1px solid var(--line-soft)}
+.doors.open .door.left{transform:translateX(-102%)}
+.doors.open .door.right{transform:translateX(102%)}
+.door-emblem{position:absolute;inset:0;display:grid;place-items:center;color:var(--gold);pointer-events:none}
+.door-emblem svg{animation:pulse 1.1s ease-in-out infinite;transition:opacity .4s}
+.doors.open .door-emblem svg{opacity:0}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.18)}}
+
+/* ---------- hero ---------- */
+.hero{text-align:center;padding:clamp(48px,10vh,110px) 0 26px}
+.display{
+  font-family:var(--display);font-weight:400;color:var(--ivory);
+  font-size:clamp(3.2rem,13vw,7rem);letter-spacing:.1em;line-height:1.05;margin-top:14px;
+}
+.display span{display:inline-block;opacity:0;transform:translateY(.5em);animation:rise .8s cubic-bezier(.2,.7,.2,1) both;animation-delay:calc(var(--i)*70ms)}
+@keyframes rise{to{opacity:1;transform:none}}
+.hero .divider{max-width:280px}
+.hero .lead{margin-top:18px}
+
+.music-btn{
+  margin-top:26px;display:inline-flex;align-items:center;gap:10px;
+  border:1px solid var(--line);border-radius:999px;background:transparent;color:var(--gold-soft);
+  padding:11px 20px;font-size:.66rem;letter-spacing:.26em;text-transform:uppercase;
+  transition:border-color .3s,background .3s;
+}
+.music-btn:hover{border-color:var(--gold);background:rgba(207,167,107,.07)}
+.music-btn .ic-pause{display:none}
+.music-btn.playing .ic-play{display:none}
+.music-btn.playing .ic-pause{display:block}
+.eq{display:none;align-items:flex-end;gap:2px;height:13px}
+.music-btn.playing .eq{display:inline-flex}
+.eq i{width:2px;background:var(--gold);height:5px;animation:eq 1s ease-in-out infinite}
+.eq i:nth-child(2){animation-delay:.18s}
+.eq i:nth-child(3){animation-delay:.36s}
+@keyframes eq{0%,100%{height:4px}50%{height:13px}}
+.music-hint{margin-top:12px;font:italic .82rem var(--serif);color:var(--rose)}
+
+/* ---------- kepala seksi ---------- */
+.gallery,.lovebook{max-width:1020px;width:100%;margin:0 auto;padding-top:clamp(40px,9vh,90px)}
+.sec-head{text-align:center}
+.sec-tag{font-size:.62rem;letter-spacing:.4em;text-transform:uppercase;color:var(--gold)}
+.sec-head h2{font-family:var(--display);font-weight:400;font-size:clamp(1.6rem,6vw,2.4rem);letter-spacing:.1em;margin-top:10px}
+.sec-head p{font:italic .92rem var(--serif);color:var(--muted);margin-top:6px}
+
+/* ---------- strip foto berjalan ---------- */
+.strip{
+  margin-top:30px;overflow:hidden;padding:14px 0 6px;
+  -webkit-mask-image:linear-gradient(90deg,transparent,#000 7%,#000 93%,transparent);
+          mask-image:linear-gradient(90deg,transparent,#000 7%,#000 93%,transparent);
+}
+.strip-track{display:flex;width:max-content;animation:marq 30s linear infinite}
+.strip:hover .strip-track,.strip:active .strip-track{animation-play-state:paused}
+@keyframes marq{to{transform:translateX(-50%)}}
+.strip-set{display:flex;gap:clamp(14px,3vw,22px);padding-right:clamp(14px,3vw,22px)}
+.ph{
+  flex:0 0 auto;width:clamp(168px,52vw,238px);
+  background:#1c1218;border:1px solid var(--line-soft);padding:10px 10px 12px;
+  cursor:pointer;transition:transform .45s,border-color .45s;
+}
+.ph:hover{transform:translateY(-5px);border-color:var(--line)}
+.ph img{width:100%;aspect-ratio:4/5;object-fit:cover;filter:saturate(.94) contrast(1.03)}
+.ph figcaption{font:italic 500 .86rem var(--serif);color:var(--gold-soft);padding-top:10px;text-align:center;letter-spacing:.05em}
+
+/* ---------- buku cinta ---------- */
+.book-stage{
+  --bw:clamp(136px,42vw,218px);
+  --bh:calc(var(--bw) * 1.4);
+  position:relative;width:calc(var(--bw) * 2 + 6px);height:var(--bh);
+  margin:34px auto 0;perspective:1700px;
+}
+.base-page{
+  position:absolute;left:0;top:0;width:var(--bw);height:var(--bh);
+  background:#e7dcc6;border:1px solid rgba(120,90,70,.28);
+  display:grid;place-items:center;color:#c3ad90;
+  box-shadow:inset 8px 0 16px rgba(90,60,40,.1), 0 22px 44px rgba(0,0,0,.4);
+}
+.book{position:absolute;right:0;top:0;width:var(--bw);height:var(--bh);transform-style:preserve-3d}
+.leaf{
+  position:absolute;inset:0;transform-origin:left center;transform-style:preserve-3d;
+  transition:transform .95s cubic-bezier(.42,.05,.22,1);will-change:transform;
+}
+.leaf.flipped{transform:rotateY(-180deg)}
+.face{
+  position:absolute;inset:0;padding:clamp(14px,3.6vw,22px) clamp(13px,3.4vw,20px);
+  background:linear-gradient(160deg,#f6efe0,#ebe0c9);color:var(--paper-ink);
+  backface-visibility:hidden;-webkit-backface-visibility:hidden;
+  display:flex;flex-direction:column;overflow:hidden;
+  box-shadow:inset 6px 0 16px rgba(70,42,34,.12), inset 0 0 26px rgba(90,60,40,.06);
+}
+.face.back{transform:rotateY(180deg);box-shadow:inset -6px 0 16px rgba(70,42,34,.12), inset 0 0 26px rgba(90,60,40,.06)}
+
+.face.cover-face{justify-content:center;align-items:center;gap:9px;text-align:center;
+  background:linear-gradient(155deg,#2b1b23,#170e14);color:var(--ivory)}
+.cover-face::before{content:'';position:absolute;inset:8px;border:1px solid var(--line);pointer-events:none}
+.cov-tag{font-size:.56rem;letter-spacing:.42em;text-transform:uppercase;color:var(--gold)}
+.cov-title{font-family:var(--display);font-weight:400;font-size:clamp(1.3rem,5vw,1.8rem);letter-spacing:.1em}
+.cover-face svg{color:var(--gold);margin:6px 0 2px}
+.cov-sub{font:italic .74rem var(--serif);color:#b7a58c}
+
+.dedic{font:italic .92rem/1.7 var(--serif);color:#5a4350;justify-content:center;text-align:center}
+
+.note-no{font:italic 600 1.35rem var(--serif);color:#9c5b52}
+.face h4{font:600 .98rem var(--serif);letter-spacing:.02em;margin:5px 0 7px;color:#2c1b26}
+.face .note-p{font:italic .85rem/1.68 var(--serif);color:#4a3540}
+.note-from{margin-top:auto;font:italic .8rem var(--serif);color:#8a6f5e;padding-top:10px}
+.page-no{position:absolute;bottom:9px;right:13px;font-size:.6rem;letter-spacing:.14em;color:#b7a18e}
+.blank-mark{margin:auto;color:#d8c6ab}
+
+.face.tamat{justify-content:center;align-items:center;gap:8px;text-align:center;background:linear-gradient(160deg,#f2e9d6,#e6d9bf)}
+.tamat-heart{color:#9c5b52}
+.tamat-word{font-family:var(--display);font-size:1.35rem;letter-spacing:.14em;color:#2c1b26}
+.tamat-sub{font:italic .84rem var(--serif);color:#7a6152}
+
+.book-nav{display:flex;align-items:center;justify-content:center;gap:18px;margin-top:26px}
+.book-nav button{
+  width:44px;height:44px;border-radius:50%;border:1px solid var(--line);background:transparent;
+  color:var(--gold-soft);display:grid;place-items:center;transition:.3s;
+}
+.book-nav button:hover:not(:disabled){background:rgba(207,167,107,.1);border-color:var(--gold)}
+.book-nav button:disabled{opacity:.3;cursor:default}
+#bookInfo{font:italic .9rem var(--serif);color:var(--muted);min-width:110px;text-align:center}
+
+/* ---------- footer ---------- */
+.foot{
+  text-align:center;padding:clamp(46px,9vh,90px) 0 26px;color:var(--muted);
+}
+.foot svg{color:var(--gold);margin:0 auto 10px}
+.foot p{font-size:.72rem;letter-spacing:.1em}
+
+/* ---------- lightbox ---------- */
+.lightbox{
+  position:fixed;inset:0;z-index:80;display:grid;place-items:center;padding:20px;
+  background:rgba(10,6,10,.92);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  opacity:0;pointer-events:none;transition:opacity .35s;
+}
+.lightbox.open{opacity:1;pointer-events:auto}
+.lightbox figure{max-width:min(88vw,560px)}
+.lightbox img{max-height:68vh;width:auto;max-width:100%;object-fit:contain;
+  border:1px solid var(--line);padding:10px;background:#1c1218}
+.lightbox figcaption{text-align:center;font:italic 1rem var(--serif);color:var(--gold-soft);padding-top:14px}
+.lb-close{
+  position:absolute;top:max(16px,env(safe-area-inset-top));right:18px;width:42px;height:42px;
+  border-radius:50%;border:1px solid var(--line);background:rgba(0,0,0,.35);color:var(--gold-soft);
+  display:grid;place-items:center;
+}
+
+@media (max-width:380px){
+  .book-nav{gap:12px}
+  .keypad{max-width:256px}
+}
+@media (prefers-reduced-motion:reduce){
+  .strip-track{animation-duration:60s}
+  .display span{animation-duration:.1s}
+}
